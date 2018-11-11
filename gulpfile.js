@@ -1,8 +1,11 @@
+/* eslint-disable node/no-unpublished-require */
 const gulp = require('gulp');
 const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cssnano = require('gulp-cssnano');
 const plumber = require('gulp-plumber');
+const nodemon = require('gulp-nodemon')
+/* eslint-enable node/no-unpublished-require */
 
 gulp.task('scss', () => {
   return gulp
@@ -15,9 +18,13 @@ gulp.task('scss', () => {
     })
     )
     .pipe(cssnano())
-    .pipe(gulp.dest('public/stylesheets'))
+    .pipe(gulp.dest('public/stylesheets'));
 });
 
 gulp.task('default', ['scss'], () => {
   gulp.watch('dev/scss/**/*.scss', ['scss']);
 });
+
+gulp.task('nodemon', function () {
+  nodemon({ script: 'index.js' })
+})
