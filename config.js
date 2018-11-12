@@ -1,4 +1,11 @@
+const dotenv = require('dotenv');
+const path = require('path');
+
+const root = path.join.bind(this, __dirname);
+dotenv.config({ path: root('.env') });
+
 module.exports = {
-  PORT: 3002,
-  MONGO_URL: 'mongodb://localhost/blog'
+  PORT: process.env.PORT ||,
+  MONGO_URL: process.env.MONGO_URL,
+  IS_PRODUCTION: process.env.NODE_ENV === 'production'
 };
