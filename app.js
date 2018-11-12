@@ -37,27 +37,8 @@ app.use(
 
 // routers
 app.get('/', (req, res) => {
-  // Post.find({})
-  //   .then(posts => {
   res.render('index');
-  // })
-  // .catch(err => {
-  //   res.sratus(200).json({ err: err });
-  // });
 });
-
-// app.get('/create', (req, res) => res.render('create'));
-// app.post('/create', (req, res) => {
-//   //arr.push(req.body.text);
-//   const { title, body } = req.body;
-
-//   Post.create({
-//     title: title,
-//     body: body
-//   }).then(post => console.log(post.id));
-//   res.redirect('/');
-//   console.log(req.body);
-// });
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
