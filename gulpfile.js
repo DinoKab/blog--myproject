@@ -41,5 +41,5 @@ gulp.task('scripts', () =>
 );
 
 gulp.task('nodemon', function () {
-  nodemon({ script: 'index.js' })
+  nodemon({ script: 'app.js' })
 })

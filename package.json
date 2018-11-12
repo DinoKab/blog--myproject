@@ -4,14 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env PORT: 3002 node app.js",
+    "start": "node app.js",
     "dev": "nodemon app.js",
     "gulp": "gulp"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cross-env": "^5.2.0",
     "eslint": "^5.8.0",
     "eslint-config-prettier": "^3.1.0",
     "eslint-plugin-node": "^8.0.0",
@@ -22,7 +21,6 @@
   },
   "dependencies": {
     "body-parser": "^1.18.3",
-    "concat": "^1.0.3",
     "dotenv": "^6.1.0",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
