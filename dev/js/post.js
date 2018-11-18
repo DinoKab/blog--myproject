@@ -1,29 +1,34 @@
 /* eslint-disable no-undef */
-
 $(function () {
-  // eslint-disable next-line
+  // eslint-disable-next-line
   var editor = new MediumEditor('#post-body', {
     placeholder: {
-      rext: '',
+      text: '',
       hideOnClick: true
     }
   });
 
+  // remove errors
+  function removeErrors() {
+    $('.post-form p.error').remove();
+    $('.post-form input, #post-body').removeClass('error');
+  }
+
   // clear
   $('.post-form input, #post-body').on('focus', function () {
-    $('p.error').remove();
-    $('input, div').removeClass('error');
+    removeErrors();
   });
 
   // publish
   $('.publish-button').on('click', function (e) {
     e.preventDefault();
-
+    removeErrors();
 
     var data = {
       title: $('#post-title').val(),
       body: $('#post-body').html()
     };
+
     $.ajax({
       type: 'POST',
       data: JSON.stringify(data),
@@ -43,7 +48,7 @@ $(function () {
         $(location).attr('href', '/');
       }
     });
-  })
+  });
 });
 
 /* eslint-enable no-undef */

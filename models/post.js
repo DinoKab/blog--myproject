@@ -11,6 +11,11 @@ const schema = new Schema(
     },
     body: {
       type: String
+    },
+    // owner хранит id автора поста
+    owner: {
+      type: Schema.Types.Object,
+      ref: 'User'
     }
   },
   {
