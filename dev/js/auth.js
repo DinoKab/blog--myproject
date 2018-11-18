@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-
 $(function () {
   // toggle
   var flag = true;
@@ -8,7 +7,7 @@ $(function () {
 
     $('input').val('');
     $('p.error').remove();
-    $('input').removeClass('error')
+    $('input').removeClass('error');
 
     if (flag) {
       flag = false;
@@ -22,12 +21,9 @@ $(function () {
   });
 
   // clear
-  $('input').on('focus', function () {
-    $('p.error').remove();
-    $('input').removeClass('error');
-  });
-  $('input').on('focus', function () {
-    $('p.success').remove();
+  $('form.login input, form.register input').on('focus', function () {
+    $('form.login p.error, form.register p.error').remove();
+    $('form.login input, form.register input').removeClass('error');
   });
 
   // register
@@ -46,7 +42,7 @@ $(function () {
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
-      url: 'api/auth/register'
+      url: '/api/auth/register'
     }).done(function (data) {
       if (!data.ok) {
         $('.register h2').after('<p class="error">' + data.error + '</p>');
@@ -62,7 +58,7 @@ $(function () {
     });
   });
 
-  //login
+  // login
   $('.login-button').on('click', function (e) {
     e.preventDefault();
     $('p.error').remove();
@@ -77,7 +73,7 @@ $(function () {
       type: 'POST',
       data: JSON.stringify(data),
       contentType: 'application/json',
-      url: 'api/auth/login'
+      url: '/api/auth/login'
     }).done(function (data) {
       if (!data.ok) {
         $('.login h2').after('<p class="error">' + data.error + '</p>');
