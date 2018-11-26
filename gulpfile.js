@@ -4,9 +4,9 @@ const sass = require('gulp-sass');
 const autoprefixer = require('gulp-autoprefixer');
 const cssnano = require('gulp-cssnano');
 const plumber = require('gulp-plumber');
-const nodemon = require('gulp-nodemon')
-const concat = require('gulp-concat')
-const uglify = require('gulp-uglifyjs')
+const nodemon = require('gulp-nodemon');
+const concat = require('gulp-concat');
+const uglify = require('gulp-uglifyjs');
 /* eslint-enable node/no-unpublished-require */
 
 gulp.task('scss', () => {
@@ -15,9 +15,9 @@ gulp.task('scss', () => {
     .pipe(plumber())
     .pipe(sass())
     .pipe(
-    autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], {
-      cascade: true
-    })
+      autoprefixer(['last 15 versions', '> 1%', 'ie 8', 'ie 7'], {
+        cascade: true
+      })
     )
     .pipe(cssnano())
     .pipe(gulp.dest('public/stylesheets'));
@@ -33,15 +33,15 @@ gulp.task('scripts', () =>
     .src([
       'dev/js/auth.js',
       'dev/js/post.js',
+      'dev/js/comment.js',
       'node_modules/medium-editor/dist/js/medium-editor.min.js'
       //
     ])
     .pipe(concat('scripts.js'))
     .pipe(uglify())
     .pipe(gulp.dest('public/javascripts'))
-
 );
 
-gulp.task('nodemon', function () {
-  nodemon({ script: 'app.js' })
-})
+gulp.task('nodemon', function() {
+  nodemon({ script: 'app.js' });
+});

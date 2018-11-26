@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment');
+moment.locale('ru');
 
-const config = require('../config')
+const config = require('../config');
 const models = require('../models');
 
 async function posts(req, res) {
@@ -11,11 +13,11 @@ async function posts(req, res) {
   const page = req.params.page || 1;
 
   try {
-  const posts = await models.Post.find({})
-  .skip(perPage * page - perPage)
-  .limit(perPage)
-  .populate('owner')
-  .sort({createdAt: -1})
+    const posts = await models.Post.find({})
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .populate('owner')
+      .sort({ createdAt: -1 });
 
     const count = await models.Post.count();
 
@@ -28,9 +30,8 @@ async function posts(req, res) {
         login: userLogin
       }
     });
-
   } catch (error) {
-    throw new Error('Server Error')
+    throw new Error('Server Error');
   }
 
   // models.Post.find({})
@@ -72,7 +73,6 @@ router.get('/posts/:post', async (req, res, next) => {
     err.status = 404;
     next(err);
   } else {
-
     try {
       const post = await models.Post.findOne({
         url
@@ -83,17 +83,32 @@ router.get('/posts/:post', async (req, res, next) => {
         err.status = 404;
         next(err);
       } else {
+        const comments = await models.Comment.find({
+          post: post.id,
+          parent: { $exists: false }
+        });
+
+        // .populate({
+        //   path: 'children',
+        //   populate: {
+        //     path: 'children'
+        //   }
+        // });
+
+        console.log(comments);
+
         res.render('post/post', {
           post,
+          comments,
+          moment,
           user: {
             id: userId,
             login: userLogin
           }
         });
       }
-
     } catch (error) {
-      throw new Error('Server Error')
+      throw new Error('Server Error');
     }
 
     // models.Post.findOne({
@@ -132,11 +147,11 @@ router.get('/users/:login/:page*?', async (req, res) => {
     const posts = await models.Post.find({
       owner: user.id
     })
-    .skip(perPage * page - perPage)
-    .limit(perPage)
-    .sort({createdAt: -1});
+      .skip(perPage * page - perPage)
+      .limit(perPage)
+      .sort({ createdAt: -1 });
 
-    const count = await  models.Post.count({
+    const count = await models.Post.count({
       owner: user.id
     });
 
@@ -150,45 +165,44 @@ router.get('/users/:login/:page*?', async (req, res) => {
         login: userLogin
       }
     });
-
   } catch (error) {
-    throw new Error('Server Error')
+    throw new Error('Server Error');
   }
 
-//   models.User.findOne({
-//     login
-//   }).then(user => {
-//     console.log(user);
-//     models.Post.find({
-//       owner: user.id
-//     })
-//     .skip(perPage * page - perPage)
-//     .limit(perPage)
-//     .sort({createdAt: -1})
-//     .then(posts => {
-//       models.Post.count({
-//         owner: user.id
-//       })
-//       .then(count => {
-//         res.render('archive/user', {
-//           posts,
-//           _user: user,
-//           current: page,
-//           pages: Math.ceil(count / perPage),
-//           user: {
-//             id: userId,
-//             login: userLogin
-//           }
-//         });
-//       })
-//       .catch(() => {
-//         throw new Error('Server Error')
-//       });
-//     })
-//     .catch(() => {
-//       throw new Error('Server Error')
-//     });
-//   })
- });
+  //   models.User.findOne({
+  //     login
+  //   }).then(user => {
+  //     console.log(user);
+  //     models.Post.find({
+  //       owner: user.id
+  //     })
+  //     .skip(perPage * page - perPage)
+  //     .limit(perPage)
+  //     .sort({createdAt: -1})
+  //     .then(posts => {
+  //       models.Post.count({
+  //         owner: user.id
+  //       })
+  //       .then(count => {
+  //         res.render('archive/user', {
+  //           posts,
+  //           _user: user,
+  //           current: page,
+  //           pages: Math.ceil(count / perPage),
+  //           user: {
+  //             id: userId,
+  //             login: userLogin
+  //           }
+  //         });
+  //       })
+  //       .catch(() => {
+  //         throw new Error('Server Error')
+  //       });
+  //     })
+  //     .catch(() => {
+  //       throw new Error('Server Error')
+  //     });
+  //   })
+});
 
 module.exports = router;
