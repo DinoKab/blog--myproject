@@ -12,10 +12,13 @@ const schema = new Schema(
     body: {
       type: String
     },
-    // owner хранит id автора поста
     owner: {
-      type: Schema.Types.Object,
+      type: Schema.Types.ObjectId,
       ref: 'User'
+    },
+    commentCount: {
+      type: Number,
+      default: 0
     }
   },
   {
@@ -23,13 +26,22 @@ const schema = new Schema(
   }
 );
 
+schema.statics = {
+  incCommentCount(postId) {
+    return this.findByIdAndUpdate(
+      postId,
+      { $inc: { commentCount: 1 } },
+      { new: true }
+    );
+  }
+};
+
 schema.plugin(
   URLSlugs('title', {
     field: 'url',
     generator: text => tr.slugify(text)
   })
 );
-
 schema.set('toJSON', {
   virtuals: true
 });
