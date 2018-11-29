@@ -1,13 +1,5 @@
 /* eslint-disable no-undef */
-$(function () {
-  // eslint-disable-next-line
-  var editor = new MediumEditor('#post-body', {
-    placeholder: {
-      text: '',
-      hideOnClick: true
-    }
-  });
-
+$(function() {
   // remove errors
   function removeErrors() {
     $('.post-form p.error').remove();
@@ -15,18 +7,18 @@ $(function () {
   }
 
   // clear
-  $('.post-form input, #post-body').on('focus', function () {
+  $('.post-form input, #post-body').on('focus', function() {
     removeErrors();
   });
 
   // publish
-  $('.publish-button').on('click', function (e) {
+  $('.publish-button').on('click', function(e) {
     e.preventDefault();
     removeErrors();
 
     var data = {
       title: $('#post-title').val(),
-      body: $('#post-body').html()
+      body: $('#post-body').val()
     };
 
     $.ajax({
@@ -34,18 +26,39 @@ $(function () {
       data: JSON.stringify(data),
       contentType: 'application/json',
       url: '/post/add'
-    }).done(function (data) {
+    }).done(function(data) {
       console.log(data);
       if (!data.ok) {
         $('.post-form h2').after('<p class="error">' + data.error + '</p>');
         if (data.fields) {
-          data.fields.forEach(function (item) {
+          data.fields.forEach(function(item) {
             $('#post-' + item).addClass('error');
           });
         }
       } else {
         // $('.register h2').after('<p class="success">Отлично!</p>');
         $(location).attr('href', '/');
+      }
+    });
+  });
+
+  // upload
+  $('#fileinfo').on('submit', function(e) {
+    e.preventDefault();
+
+    var formData = new FormData(this);
+
+    $.ajax({
+      type: 'POST',
+      url: '/upload/image',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(r) {
+        console.log(r);
+      },
+      error: function(e) {
+        console.log(e);
       }
     });
   });
