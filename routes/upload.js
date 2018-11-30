@@ -1,15 +1,67 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-
+const Sharp = require('sharp');
 const multer = require('multer');
+const mkdirp = require('mkdirp');
 
-const storage = multer.diskStorage({
+const config = require('../config');
+const diskStorage = require('../utils/diskStorage');
+const models = require('../models');
+
+const rs = () =>
+  Math.random()
+    .toString(36)
+    .slice(-3);
+
+const storage = diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads');
+    const dir = '/' + rs() + '/' + rs();
+    req.dir = dir;
+
+    mkdirp(config.DESTINATION + dir, err => cb(err, config.DESTINATION + dir));
+    // cb(null, config.DESTINATION + dir);
   },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
+  filename: async (req, file, cb) => {
+    const userId = req.session.userId;
+    const fileName = Date.now().toString(36) + path.extname(file.originalname);
+    const dir = req.dir;
+    console.log(req.body); // { postId: '5c016c2e9078061da49f232a' }
+
+    // find post
+    const post = await models.Post.findById(req.body.postId);
+
+    if (!post) {
+      const err = new Error('No Post');
+      err.code = 'NOPOST';
+      return cb(err);
+    }
+
+    // upload
+    const upload = await models.Upload.create({
+      owner: userId,
+      path: dir + '/' + fileName
+    });
+
+    // write to post
+    const uploads = post.uploads;
+    uploads.push(upload.id);
+    post.uploads = uploads;
+    await post.save();
+
+    cb(null, fileName);
+  },
+  sharp: (req, file, cb) => {
+    const resizer = Sharp()
+      .resize(1024, 768)
+      .max()
+      .withoutEnlargement()
+      .toFormat('jpeg')
+      .jpeg({
+        quality: 40,
+        progressive: true
+      });
+    cb(null, resizer);
   }
 });
 
@@ -37,6 +89,9 @@ router.post('/image', (req, res) => {
       }
       if (err.code === 'EXTENTION') {
         error = 'Только jpeg и png!';
+      }
+      if (err.code === 'NOPOST') {
+        error = 'Обнови страницу!';
       }
     }
     res.json({
