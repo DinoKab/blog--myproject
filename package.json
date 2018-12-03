@@ -37,6 +37,7 @@
     "gulp-plumber": "^1.2.0",
     "gulp-sass": "^4.0.2",
     "gulp-uglifyjs": "^0.6.2",
+    "heroku": "^7.18.10",
     "jquery": "^3.3.1",
     "mkdirp": "^0.5.1",
     "moment": "^2.22.2",
